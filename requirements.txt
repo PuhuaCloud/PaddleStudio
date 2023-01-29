@@ -1,0 +1,21 @@
+tqdm
+scipy
+colorama
+cython
+pycocotools
+shapely
+paddleslim >= 2.2.0
+visualdl >= 2.2.0
+opencv-python
+scikit-learn
+lap
+motmetrics
+matplotlib
+chardet
+openpyxl
+flask
+flask_cors
+psutil
+filelock
+parl
+xlwt
