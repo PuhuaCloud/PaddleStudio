@@ -1001,7 +1001,7 @@ def gui():
         f = open(file_path, 'r+', encoding=get_encoding(file_path))
         lines = f.readlines()
         for i, line in enumerate(lines):
-            if '0.0.0.0:8080' in line or '192.168.' in line:
+            if '0.0.0.0:8080' in line:
                 lines[i] = url
                 break
         f.close()

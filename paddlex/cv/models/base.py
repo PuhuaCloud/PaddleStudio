@@ -133,7 +133,7 @@ class BaseModel:
             [('model_type', self.model_type),
              ('num_classes', self.num_classes), ('labels', self.labels),
              ('fixed_input_shape', self.fixed_input_shape),
-             ('best_accuracy', self.best_accuracy),
+             #('best_accuracy', self.best_accuracy),
              ('best_model_epoch', self.best_model_epoch)])
         if 'self' in self.init_params:
             del self.init_params['self']
@@ -622,11 +622,11 @@ class BaseModel:
                 mode='w') as f:
             yaml.dump(model_info, f)
 
-        pipeline_info = self._get_pipeline_info(save_dir)
-        with open(
-                osp.join(save_dir, 'pipeline.yml'), encoding='utf-8',
-                mode='w') as f:
-            yaml.dump(pipeline_info, f)
+        # pipeline_info = self._get_pipeline_info(save_dir)
+        # with open(
+        #         osp.join(save_dir, 'pipeline.yml'), encoding='utf-8',
+        #         mode='w') as f:
+        #     yaml.dump(pipeline_info, f)
 
         # 模型保存成功的标志
         open(osp.join(save_dir, '.success'), 'w').close()
