@@ -1,7 +1,7 @@
 
 
 # 一、PaddleStudio概述
-本项目源自于[PaddleX](https://github.com/PaddlePaddle/PaddleX)的Restful项目，依托国产深度学习框架[PaddlePaddle](https://www.paddlepaddle.org.cn/)打造的图形化深度学习开发平台，旨在让**非AI开发者以最便捷的方式完成AI模型研发**。目前平台功能涵盖图像分类、目标检测、实例分割、语义分割等常规CV训练任务，未来将逐步打通数据标注、算法训练和部署三大流程，真正的让用户可以感受到“无代码”化的便捷。
+本项目源自于[PaddleX](https://github.com/PaddlePaddle/PaddleX)的Restful项目，依托国产深度学习框架[PaddlePaddle](https://www.paddlepaddle.org.cn/)打造的图形化深度学习开发平台，旨在让**非AI开发者以最便捷的方式完成AI模型研发**。目前平台功能涵盖图像分类、目标检测、实例分割、语义分割等常规CV训练任务，未来将逐步打通数据标注、算法研发两大模块，真正的让用户可以感受到“无代码”化的便捷。
 
 由于PaddleX项目官方已停止更新，本项目将PaddleX的GUI部分独立出来并且进行了重组，由**飞桨社区开发者共同维护**，**遵循Apache License 2.0开源协议**，欢迎各位小伙伴前来体验和参与，多多提出您的宝贵意见。
 
@@ -106,16 +106,21 @@ PaddleStudio提供了每种任务对应的示例项目，方便用户快速了�
 训练好模型以后，PaddleStudio还提供了在线预测功能。单击“模型测试”按钮，然后进入“模型测试”界面，选择一张图片并单击预测按钮，效果如下图所示：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/09d7b2dbc9394ff6b53a7f8d4e304932.png#pic_center=x300)
 针对上述图像分类任务，预测结果会给出预测类别和对应的置信度。
-### 3.2.5 静态图导出
+### 3.2.5 推理部署
 前面训练好的模型是PaddlePaddle的动态图模型，为了方便部署应用，需要将动态图模型转换成静态图模型，PaddleStudio提供了现成的转换办法。
 
 在下图所示界面上单击“导出”按钮：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/dcef4048c56e4c26ac9f55da8bf346da.png#pic_center#pic_center=x300)
-导出完成后会有相应的提示信息并且会给出导出后的静态图模型路径，如下图所示：
+导出完成后会有相应的提示信息并且会给出导出后的静态图模型路径以及对应的推理代码，如下图所示：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/149dd28f21dc407aa555d0e6e99911aa.png#pic_center=x150)
-到这里，一个相对完整的图像分类算法模型就已经研发完毕了。后面可以结合PaddlePaddle的原生部署工具[PaddleInference](https://www.paddlepaddle.org.cn/inference/v2.4/guides/demo_introduction.html)来完成最终的算法部署任务。
 
-本小节内容主要讲解了如何使用PaddleStudio进行图像分类算法开发，如果想要自行开发类似的图像分类、目标检测、语义分割、实例分割等算法模型，可以参照PaddleStudio官网说明并结合相应的示例工程进行开发。从整个使用体验上来看，只要按照PaddleStudio的各个任务准备好对应的数据集，就可以直接使用图形化操作界面“傻瓜式”完成整个算法训练任务。
+到这里，一个相对完整的图像分类算法模型就已经研发完毕了。读者如果想要本地推理，可以切换到到处的路径下面，运行下述代码：
+```bash
+python infer.py
+```
+即可完成推理。目前仅支持自动生成基于Paddle Inference的python版推理代码，后续会逐步支持生成基于c++的推理代码。
+
+本小节内容主要讲解了如何使用PaddleStudio进行图像分类算法开发，如果想要自行开发类似的图像分类、目标检测、语义分割、实例分割等算法模型，可以参照PaddleStudio官网说明并结合相应的示例工程进行开发。从整个使用体验上来看，只要按照PaddleStudio的各个任务准备好对应的数据集，就可以直接使用图形化操作界面“傻瓜式”完成整个算法研发任务。
 
 下面讲解如何按照PaddleStudio的方式组织相应任务的数据集。
 # 四、数据集格式
@@ -274,10 +279,10 @@ PaddleStudio是以“项目—任务”这样两个级别进行使用的，一�
 训练完成后，可以使用训练好的动态图模型进行测试。单击“评估和导出模型”按钮，然后再单击“模型测试”按钮进入模型测试界面。选择一张图片，然后单击预测，效果如下图所示：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/32606001573a415fb25294cd38361c74.png#pic_center=x350)
 可以看到，对于向左的手势，预测结果是left，置信度是1.0，由此可见训练的模型是有效的。
-### 5.3.4 静态图导出
-为了方便后面部署，可以使用PaddleStudio的静态图导出功能，生成静态图模型文件。单击“导出”按钮即可完成，效果如下图所示：
+### 5.3.4 部署
+为了方便后面部署，可以使用PaddleStudio的静态图导出功能，生成静态图模型文件同时生成python版的推理代码。单击“导出”按钮即可完成，效果如下图所示：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/186ca744d5564af5abb5587dd7d88d9d.png#pic_center=x350)
-用户可以根据对应的导出路径去获取最终的静态图模型，其内容如下：
+用户可以根据对应的导出路径去获取最终的静态图模型及推理文件，其内容如下：
 ```typescript
 inference_model
 	├─.success
@@ -285,7 +290,9 @@ inference_model
 	├─model.pdiparams.info
 	├─model.pdmodel
 	├─model.yml
-	├─pipeline.yml
+infer.py
+tools.py
+xxx.jpg
 ```
 各文件说明如下：
 
@@ -295,181 +302,27 @@ inference_model
  - model.pdiparams.info：模型参数信息文件，实际部署时不需要；
  - model.pdmodel：模型结构文件；
  - model.yml：模型配置文件，实际部署时不需要；
- - model.yml：PaddleStudio流程文件，实际部署时不需要；
+ - infer.py:自动生成的基于Paddle Inference的python推理文件；
+ - tools.py:自动生成的python预处理函数；
+ - xxx.jpg：从验证集中自动拷贝出来的一张测试图片；
 ```
 
-上述几个文件，真正需要的就是model.pdiparams和model.pdmodel这两个文件。除了这两个文件以外，我们需要额外注意model.yml文件，该文件记录了模型的相关预处理和后处理信息，内容如下所示：
-```yaml
-Model: MobileNetV2
-Transforms:
-- ResizeByShort:
-    interp: LINEAR
-    max_size: -1
-    short_size: 256
-- CenterCrop:
-    crop_size: 224
-- Normalize:
-    is_scale: true
-    max_val:
-    - 255.0
-    - 255.0
-    - 255.0
-    mean:
-    - 0.485
-    - 0.456
-    - 0.406
-    min_val:
-    - 0
-    - 0
-    - 0
-    std:
-    - 0.229
-    - 0.224
-    - 0.225
-_Attributes:
-  best_accuracy: !!python/object/apply:numpy.core.multiarray.scalar
-  - !!python/object/apply:numpy.dtype
-    args:
-    - f4
-    - false
-    - true
-    state: !!python/tuple
-    - 3
-    - <
-    - null
-    - null
-    - null
-    - -1
-    - -1
-    - 0
-  - !!binary |
-    AACAPw==
-  best_model_epoch: 5
-  eval_metrics:
-    acc1: 1.0
-  fixed_input_shape:
-  - -1
-  - 3
-  - -1
-  - -1
-  labels:
-  - jump
-  - left
-  - right
-  - stop
-  model_type: classifier
-  num_classes: 4
-_init_params:
-  num_classes: 4
-completed_epochs: 0
-status: Infer
-version: 2.1.0
-```
-在进行后面的模型部署任务时，需要结合这个配置文件指明的相关前后处理操作进行实现。
-
-到这里，通过PaddleStudio完成了算法研发，得到了我们想要的手势识别模型，整个这个训练部分没有写一行代码，只需要使用图形界面进行操作即可。接下来就开始进行部署。
-## 5.4 Paddle Inference部署
-### 5.4.1 PaddleInference概述
-Paddle Inference是飞桨PaddlePaddle的原生推理库，提供服务器端的高性能推理能力。由于Paddle Inference直接面向飞桨的训练算子，因此它支持飞桨训练出的所有模型的推理。Paddle Inference功能特性丰富，性能优异，针对不同平台不同的应用场景进行了深度的适配优化，做到高吞吐、低时延，保证了飞桨模型在服务器端即训即用，快速部署。
-
-值得注意的是，飞桨提供了众多部署工具，例如PaddleLite、PaddleServing、FastDeploy、PaddleJS等，在众多的部署工具中Paddle Inference是最本源的部署工具。从某种意义上来说，可以将Paddle Inference看作是PaddlePaddle的静态图推理引擎，与PaddlePaddle训练出来的模型完全适配，并且Python版本的PaddleInference自动集成在了PaddlePaddle中，如果想使用Python语言调用Paddle Inference接口，那么只需要按照2.1节的内容安装好PaddlePaddle以后就可以直接使用Paddle Inference了。当然，如果想使用C++等语言调用PaddleInference，可以参照[Paddle Inference官网教程](https://www.paddlepaddle.org.cn/inference/master/guides/introduction/index_intro.html)下载相应的C++预测库进行配置和使用。
-### 5.4.2 PaddleInference单张图片推理
-Paddle Inference官网提供了很多预测示例，参照这些示例就可以顺利的编写对应的模型预测代码。本项目参照官网的[Resnet50](https://github.com/PaddlePaddle/Paddle-Inference-Demo/tree/master/python/gpu/resnet50)图像分类案例，编写了对应的手势识别推理脚本infer.py，其内容如下：
+下面，我们通过cd命令切换到模型的导出路径下面（export_model文件夹下面），然后使用下面的命令执行推理：
 ```python
-import numpy as np
-import cv2
-
-from paddle.inference import Config
-from paddle.inference import create_predictor
-
-from img_preprocess import preprocess
-
-def init_predictor():
-    '''配置预测器'''
-    config = Config('inference_model/model.pdmodel', 'inference_model/model.pdiparams')
-    config.enable_use_gpu(500, 0)
-    config.enable_memory_optim()  
-    predictor = create_predictor(config)
-    return predictor
-
-def run(predictor, img):
-    '''单张图像预测'''
-    input_names = predictor.get_input_names()
-    for i, name in enumerate(input_names):
-        input_tensor = predictor.get_input_handle(name)
-        input_tensor.reshape(img[i].shape)
-        input_tensor.copy_from_cpu(img[i].copy())
-    predictor.run()
-    results = []
-    output_names = predictor.get_output_names()
-    for i, name in enumerate(output_names):
-        output_tensor = predictor.get_output_handle(name)
-        output_data = output_tensor.copy_to_cpu()
-        results.append(output_data)
-    return results
-
-if __name__ == '__main__':
-    # 创建预测器
-    model = init_predictor()
-    # 读取图像
-    img = cv2.imread('gestdata/stop/0.jpg')
-    # 图像预处理
-    img = preprocess(img)
-    # 执行预测
-    result = run(model, [img])
-    label = np.argmax(result[0][0])
-    score = result[0][0][label]
-    print("class index: ", label ,"   score: ",score)
+python infer.py
 ```
-上述脚本读取图片gestdata/stop/0.jpg然后调用静态图模型完成推理，在使用时需要将前面导出的静态图模型文件夹inference_model拷贝到当前项目根目录下。另外，该脚本中用到了一些官方为我们编写好的预处理代码，位于img_preprocess.py，其完整内容如下：
-```python
-import cv2
-import numpy as np
 
-def resize_short(img, target_size):
-    """ resize_short """
-    percent = float(target_size) / min(img.shape[0], img.shape[1])
-    resized_width = int(round(img.shape[1] * percent))
-    resized_height = int(round(img.shape[0] * percent))
-    resized = cv2.resize(img, (resized_width, resized_height))
-    return resized
-
-def crop_image(img, target_size, center):
-    """ crop_image """
-    height, width = img.shape[:2]
-    size = target_size
-    if center == True:
-        w_start = (width - size) / 2
-        h_start = (height - size) / 2
-    else:
-        w_start = np.random.randint(0, width - size + 1)
-        h_start = np.random.randint(0, height - size + 1)
-    w_end = w_start + size
-    h_end = h_start + size
-    img = img[int(h_start):int(h_end), int(w_start):int(w_end), :]
-    return img
-
-def preprocess(img):
-    mean = [0.485, 0.456, 0.406]
-    std = [0.229, 0.224, 0.225]
-    img = resize_short(img, 256)
-    img = crop_image(img, 224, True)
-    # bgr-> rgb && hwc->chw
-    img = img[:, :, ::-1].astype('float32').transpose((2, 0, 1)) / 255
-    img_mean = np.array(mean).reshape((3, 1, 1))
-    img_std = np.array(std).reshape((3, 1, 1))
-    img -= img_mean
-    img /= img_std
-    return img[np.newaxis, :]
-```
-该预处理脚本需要结合我们模型的model.yaml配置文件相关参数进行修改。
+这个自动生成的infer.py推理脚本会读取测试图片，然后调用静态图模型完成推理。
 
 预测结果如下图所示：
 ![请添加图片描述](https://img-blog.csdnimg.cn/dda8d5f5d5a542db8ca967b14a123e0b.jpeg#pic_center=x200)
 ```bash
 class index:  3    score:  0.999998
 ```
-到这里，我们就完成了整个模型的研发和部署，下面我们将模型预测部分集成到最终的游戏控制逻辑脚本playgame.py中去。
+
+到这里，通过PaddleStudio完成了算法研发，得到了我们想要的手势识别模型，整个训练和部署过程没有写一行代码，只需要使用图形界面进行操作即可。
+
+接下来我们将自动生成的模型预测脚本文件infer.py集成到最终的游戏控制逻辑脚本playgame.py中去。
 ## 5.5 集成测试
 新建游戏逻辑控制脚本playgame.py，完整代码如下：
 ```python
@@ -477,8 +330,7 @@ import numpy as np
 import cv2
 import win32api
 import win32con
-from img_preprocess import preprocess
-from infer import init_predictor,run
+from tools import *
 
 def keybd_event(VK_CODE):
     '''按下按键'''
@@ -574,7 +426,7 @@ PaddleStudio目前处在快速更新迭代中，相关功能模块也在不断�
 如果对PaddleStudio项目感兴趣，欢迎加入我们，跟我们一起开发，一起打造国产的深度学习Matlab，让全国乃至全世界的用户都用上你开发的产品。
 
 ## 6.3 教学书籍
-如果对PaddlePaddle感兴趣，想要系统学习深度学习技术或者想要系统学习PaddlePaddle框架，可以选择官方推荐的教学书籍《深度学习与图像处理PaddlePaddle》，由清华大学出版社出版，钱彬和朱会杰著（预计2023年8月出版）。除了本篇博客涉及到的PaddleStudio内容以外，书中还会详细讲解图像分类、目标检测、语义分割、OCR识别、GAN图像变换等算法原理，并结合真实的项目实战案例使用PaddlePaddle全流程讲解算法研发和部署。
+如果对PaddlePaddle感兴趣，想要系统学习深度学习技术或者想要系统学习PaddlePaddle框架，可以选择官方推荐的教学书籍《深度学习与图像处理PaddlePaddle》，由清华大学出版社出版，钱彬和朱会杰著（预计2023年8月出版）。除了本篇博客涉及到的PaddleStudio内容以外，书中还会详细讲解图像分类、目标检测、语义分割、实例分割、GAN图像变换等算法原理，并结合真实的项目实战案例使用PaddlePaddle全流程讲解算法研发和部署。
 ## 6.4 线上GPU平台
 如果用户身边暂时没有GPU机器，那么可以使用免费的GPU云平台完成开发，例如[AI Studio](https://aistudio.baidu.com/aistudio/index)、[Kaggle](https://www.kaggle.com/)、[Google Colaboratory](https://colab.research.google.com/?hl=zh_cn)等。考虑到平台的稳定性以及额外的增值服务优势，也可以使用一些付费云平台，这里推荐使用[普华云](https://www.puhuacloud.com/login?redirect=%2Findex)，整体价格较低，并且可以提供一对一的个性化服务需求，另外，平台上有现成的PaddleStudio镜像可以直接使用，不需要再安装相关环境或依赖库。
 

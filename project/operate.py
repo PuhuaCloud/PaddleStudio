@@ -328,7 +328,7 @@ def _call_paddlex_predict(task_path,
     set_folder_status(predict_status_path, PredictStatus.XPREDONE)
 
 
-def _call_paddlex_export_infer(task_path, save_dir, export_status_path, epoch):
+def _call_paddlex_export_infer(task_path, params, save_dir, export_status_path, epoch):
     # 导出模型不使用GPU
     sys.stdout = open(
         osp.join(export_status_path, 'out.log'), 'w', encoding='utf-8')
@@ -344,6 +344,67 @@ def _call_paddlex_export_infer(task_path, save_dir, export_status_path, epoch):
     model_path = osp.join(task_path, 'output', model_dir)
     model = pdx.load_model(model_path)
     model._export_inference_model(save_dir)
+    ## 导出python版部署文件
+    task_type = params['task_type']
+    dataset_path = params['dataset_path']
+    if task_type == "classification":
+        val_file_list = osp.join(dataset_path, 'val_list.txt')
+        label_list = osp.join(dataset_path, 'labels.txt')
+        # 拷贝测试图像
+        f = open(val_file_list,encoding='utf-8')
+        line = f.readline()
+        imgpath = line.split(' ')[0]
+        foldname = imgpath.split('/')[-2]
+        imgname = imgpath.split('/')[-1]
+        f.close()
+        img_src = os.path.join(dataset_path,foldname,imgname)
+        imgname = foldname + '_' + imgname
+        img_dst = os.path.join(save_dir,imgname)
+        shutil.copyfile(img_src, img_dst)
+        # 拷贝python版模板推理文件
+        file_src = './deploy/classification/infer.py'
+        file_dst = os.path.join(save_dir,'infer.py')
+        shutil.copyfile(file_src, file_dst) 
+        # 向推理模板文件中写入关键参数
+        with open(file_dst,'r',encoding="utf-8") as f:
+            text=f.read()
+        text=text.replace('ps_imgpath',imgname)
+        with open(file_dst,'w',encoding="utf-8") as f:
+            f.write(text)
+        # 拷贝python版模板工具文件
+        file_src = './deploy/classification/tools.py'
+        file_dst = os.path.join(save_dir,'tools.py')
+        shutil.copyfile(file_src, file_dst)
+        # 读取model.yml文件
+        import yaml
+        filepath = os.path.join(save_dir,'inference_model','model.yml')
+        short_size = 256
+        crop_size = 256
+        with open(filepath) as file:
+            cfg_data = yaml.load(file.read(), Loader=yaml.FullLoader)   
+            short_size = cfg_data['Transforms'][0]['ResizeByShort']['short_size']  
+            crop_size = cfg_data['Transforms'][1]['CenterCrop']['crop_size']  
+            psmean = cfg_data['Transforms'][2]['Normalize']['mean']
+            psstd = cfg_data['Transforms'][2]['Normalize']['std']
+            
+            # 向推理模板工具文件中写入关键参数
+            with open(file_dst,'r',encoding="utf-8") as f:
+                text=f.read()
+            text=text.replace('ps_short_size',str(short_size))
+            text=text.replace('ps_crop_size',str(crop_size))
+            text=text.replace('ps_mean0',str(psmean[0]))
+            text=text.replace('ps_mean1',str(psmean[1]))
+            text=text.replace('ps_mean2',str(psmean[2]))
+            text=text.replace('ps_std0',str(psstd[0]))
+            text=text.replace('ps_std1',str(psstd[1]))
+            text=text.replace('ps_std2',str(psstd[2]))
+            with open(file_dst,'w',encoding="utf-8") as f:
+                f.write(text)
+        
+            
+        
+    
+    # 设置结束标识
     '''
     model_dir = "epoch_{}".format(epoch)
     model_path = osp.join(task_path, 'output', model_dir)
@@ -357,6 +418,7 @@ def _call_paddlex_export_infer(task_path, save_dir, export_status_path, epoch):
 
 def _call_paddlex_export_quant(task_path, params, save_dir, export_status_path,
                                epoch):
+    print(save_dir)
     sys.stdout = open(
         osp.join(export_status_path, 'out.log'), 'w', encoding='utf-8')
     sys.stderr = open(
@@ -877,9 +939,16 @@ def export_noquant_model(task_path, save_dir, epoch=None):
         raise Exception("未在训练路径{}下发现保存的best_model，导出失败".format(output_path))
     export_status_path = osp.join(task_path, 'logs/export')
     safe_clean_folder(export_status_path)
+    # 解析参数文件
+    params_conf_file = osp.join(task_path, 'params.pkl')
+    assert osp.exists(
+        params_conf_file), "任务无法启动，路径{}下不存在参数配置文件params.pkl".format(task_path)
+    with open(params_conf_file, 'rb') as f:
+        params = pickle.load(f)
+    #多线程处理
     p = mp.Process(
         target=_call_paddlex_export_infer,
-        args=(task_path, save_dir, export_status_path, epoch))
+        args=(task_path, params ,save_dir, export_status_path, epoch))
     p.start()
     set_folder_status(export_status_path, TaskStatus.XEXPORTING, p.pid)
     set_folder_status(task_path, TaskStatus.XEXPORTING, p.pid)
