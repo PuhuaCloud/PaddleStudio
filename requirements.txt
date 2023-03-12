@@ -13,6 +13,7 @@ motmetrics
 matplotlib
 chardet
 openpyxl
+numpy==1.23.0
 flask
 flask_cors
 psutil
