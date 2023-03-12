@@ -995,20 +995,9 @@ def model_file():
 @app.route('/', methods=['GET'])
 def gui():
     if request.method == 'GET':
-        file_path = osp.join(osp.dirname(__file__), 'templates', 'index.html')
         ip = get_ip()
-        url = 'var str_srv_url = "http://' + ip + ':' + str(SD.port) + '";'
-        f = open(file_path, 'r+', encoding=get_encoding(file_path))
-        lines = f.readlines()
-        for i, line in enumerate(lines):
-            if '0.0.0.0:8080' in line:
-                lines[i] = url
-                break
-        f.close()
-        f = open(file_path, 'w+', encoding=get_encoding(file_path))
-        f.writelines(lines)
-        f.close()
-        return render_template('/index.html')
+        url = 'http://' + ip + ':' + str(SD.port)
+        return render_template('/index.html',server_url = url)
 
 
 def run(port):

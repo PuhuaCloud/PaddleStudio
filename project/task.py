@@ -210,19 +210,19 @@ def get_default_params(data, workspace, machine_info):
         per_gpu_memory = 0
         gpu_list = None
     else:
-        if 'gpu_list' in data:
-            gpu_list = data['gpu_list']
-            gpu_num = len(gpu_list)
-            per_gpu_memory = None
-            for gpu_id in gpu_list:
-                if per_gpu_memory is None:
-                    per_gpu_memory = machine_info['gpu_free_mem'][gpu_id]
-                elif machine_info['gpu_free_mem'][gpu_id] < per_gpu_memory:
-                    per_gpu_memory = machine_info['gpu_free_mem'][gpu_id]
-        else:
-            gpu_num = 1
-            per_gpu_memory = machine_info['gpu_free_mem'][0]
-            gpu_list = [0]
+        # if 'gpu_list' in data:
+        #     gpu_list = data['gpu_list']
+        #     gpu_num = len(gpu_list)
+        #     per_gpu_memory = None
+        #     for gpu_id in gpu_list:
+        #         if per_gpu_memory is None:
+        #             per_gpu_memory = machine_info['gpu_free_mem'][gpu_id]
+        #         elif machine_info['gpu_free_mem'][gpu_id] < per_gpu_memory:
+        #             per_gpu_memory = machine_info['gpu_free_mem'][gpu_id]
+        # else:
+        gpu_num = 1
+        per_gpu_memory = machine_info['gpu_free_mem']
+        gpu_list = [0]
     params = get_params(data, project_type, train_num, class_num, gpu_num,
                         per_gpu_memory, gpu_list)
     return {"status": 1, "train": params}
