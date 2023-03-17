@@ -400,9 +400,55 @@ def _call_paddlex_export_infer(task_path, params, save_dir, export_status_path, 
             text=text.replace('ps_std2',str(psstd[2]))
             with open(file_dst,'w',encoding="utf-8") as f:
                 f.write(text)
+    elif task_type == "instance_segmentation":
+        val_file_list = osp.join(dataset_path, 'val.json')
+        # 拷贝测试图像
+        import json
+        with open(val_file_list) as user_file:
+            file_contents = user_file.read()
+        parsed_json = json.loads(file_contents)
+        imgname = parsed_json["images"][0]['file_name']
+        foldname = 'JPEGImages'
+        img_src = os.path.join(dataset_path,foldname,imgname)
+        img_dst = os.path.join(save_dir,imgname)
+        shutil.copyfile(img_src, img_dst)
+        # 拷贝python版模板推理文件
+        file_src = './deploy/instance_segmentation/infer.py'
+        file_dst = os.path.join(save_dir,'infer.py')
+        shutil.copyfile(file_src, file_dst) 
+        # 向推理模板文件中写入关键参数
+        with open(file_dst,'r',encoding="utf-8") as f:
+            text=f.read()
+        text=text.replace('ps_imgpath',imgname)
+        with open(file_dst,'w',encoding="utf-8") as f:
+            f.write(text)
+        # 拷贝python版模板工具文件
+        file_src = './deploy/instance_segmentation/tools.py'
+        file_dst = os.path.join(save_dir,'tools.py')
+        shutil.copyfile(file_src, file_dst)
+        # 读取model.yml文件
+        import yaml
+        filepath = os.path.join(save_dir,'inference_model','model.yml')
+        short_size = 256
+        with open(filepath) as file:
+            cfg_data = yaml.load(file.read(), Loader=yaml.FullLoader)   
+            short_size = cfg_data['Transforms'][1]['ResizeByShort']['short_size']  
+            psmean = cfg_data['Transforms'][0]['Normalize']['mean']
+            psstd = cfg_data['Transforms'][0]['Normalize']['std']   
+            # 向推理模板工具文件中写入关键参数
+            with open(file_dst,'r',encoding="utf-8") as f:
+                text=f.read()
+            text=text.replace('ps_short_size',str(short_size))
+            text=text.replace('ps_mean0',str(psmean[0]))
+            text=text.replace('ps_mean1',str(psmean[1]))
+            text=text.replace('ps_mean2',str(psmean[2]))
+            text=text.replace('ps_std0',str(psstd[0]))
+            text=text.replace('ps_std1',str(psstd[1]))
+            text=text.replace('ps_std2',str(psstd[2]))
+            with open(file_dst,'w',encoding="utf-8") as f:
+                f.write(text)
         
             
-        
     
     # 设置结束标识
     '''

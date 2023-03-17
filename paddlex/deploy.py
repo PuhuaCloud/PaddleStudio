@@ -141,6 +141,7 @@ class Predictor(object):
     def preprocess(self, images, transforms):
         preprocessed_samples = self._model._preprocess(
             images, transforms, to_tensor=False)
+        
         if self._model.model_type == 'classifier':
             preprocessed_samples = {'image': preprocessed_samples[0]}
         elif self._model.model_type == 'segmenter':

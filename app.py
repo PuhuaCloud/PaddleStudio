@@ -1029,6 +1029,9 @@ def run(port):
     ip = get_ip()
     url = ip + ':' + str(port)
     
+    # ceshi 
+
+    
     # 启动服务
     try:
         logger.info("PaddleStudio服务启动成功后，您可以在浏览器打开网址 {} 进行界面操作".format(url))
