@@ -4,8 +4,8 @@ colorama
 cython
 pycocotools
 shapely
-paddleslim >= 2.2.0
-visualdl >= 2.2.0
+paddleslim==2.3.2
+visualdl==2.3.0
 opencv-python
 scikit-learn
 lap

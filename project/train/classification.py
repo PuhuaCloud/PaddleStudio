@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os.path as osp
-from paddleslim import L1NormFilterPruner
 
 
 def build_transforms(params):
@@ -121,6 +120,7 @@ def train(task_path, dataset_path, params):
         pretrain_weights = None
         # prune
         inputs = [1, 3] + list(eval_dataset[0]['image'].shape[:2])
+        from paddleslim import L1NormFilterPruner
         model.pruner = L1NormFilterPruner(
             model.net, inputs=inputs, sen_file=sensitivities_path)
         model.prune(pruned_flops=pruned_flops)

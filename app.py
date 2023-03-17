@@ -1029,13 +1029,10 @@ def run(port):
     ip = get_ip()
     url = ip + ':' + str(port)
     
-    # ceshi 
-
-    
     # 启动服务
     try:
         logger.info("PaddleStudio服务启动成功后，您可以在浏览器打开网址 {} 进行界面操作".format(url))
-        app.run(host='0.0.0.0', port=port, threaded=False, debug=True)
+        app.run(host='0.0.0.0', port=port, threaded=True, debug=False)
     except:
         print("服务启动不成功，请确保端口号：{}未被防火墙限制".format(port))
 
