@@ -447,8 +447,7 @@ def _call_paddlex_export_infer(task_path, params, save_dir, export_status_path, 
             text=text.replace('ps_std2',str(psstd[2]))
             with open(file_dst,'w',encoding="utf-8") as f:
                 f.write(text)
-        
-            
+                
     
     # 设置结束标识
     '''

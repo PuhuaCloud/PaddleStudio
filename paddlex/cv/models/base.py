@@ -163,6 +163,13 @@ class BaseModel:
                     if name.startswith('Arrange'):
                         continue
                     attr = op.__dict__
+                    # 修复导出时的target_size的类型错误
+                    try:
+                        width = attr['target_size'][0]
+                        height = attr['target_size'][1]
+                        attr['target_size'] = [width,height]
+                    except Exception as e:
+                        pass
                     info['Transforms'].append({name: attr})
         info['completed_epochs'] = self.completed_epochs
         return info
